@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import GridContainer from '@/components/Grid/GridContainer.vue';
 </script>
 
 <template>
-  <h1>Maze generation page</h1>
+  <GridContainer>
+    <h1>Maze generation page</h1>
+  </GridContainer>
 </template>
