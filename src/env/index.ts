@@ -4,7 +4,7 @@ export interface IEnv {
 
 const mapEnv = (rawEnv: ImportMetaEnv): IEnv => {
   return {
-    REPO_NAME: rawEnv.BASE_URL,
+    REPO_NAME: rawEnv.VITE_REPO_NAME,
   }
 }
 
