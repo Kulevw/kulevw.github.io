@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { UiTabsRadiosValue } from './UiTabs.types';
+import type { UiTabsRadiosValue } from './UiTabs.types'
 
-interface IUiTabsRadioItemProps {
-  id: string;
-  name: string;
-  value: UiTabsRadiosValue;
-  checked: boolean;
+interface UiTabsRadioItemProps {
+  id: string
+  name: string
+  value: UiTabsRadiosValue
+  checked: boolean
 }
 
-const props = defineProps<IUiTabsRadioItemProps>();
+const props = defineProps<UiTabsRadioItemProps>()
 
 const emit = defineEmits({
-  'change': (e: Event) => e instanceof Event,
-});
+  change: (e: Event) => e instanceof Event,
+})
 </script>
 
 <template>
@@ -33,14 +33,14 @@ const emit = defineEmits({
 </template>
 
 <style lang="scss" scoped>
-  @use '@/styles/mixins' as *;
+@use '@/styles/mixins' as *;
 
 .ui-tabs-radio-item {
   cursor: pointer;
 
   &__value {
     input:focus-visible + & {
-      @include focus-outline
+      @include focus-outline;
     }
   }
 }

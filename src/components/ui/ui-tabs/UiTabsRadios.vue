@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { uniqueId } from '@/utils/common.ts';
-import type { IUiTabsRadiosProps } from './UiTabs.types.ts';
-import UiTabsRadioItem from './UiTabsRadioItem.vue';
-import { computed, ref, type StyleValue } from 'vue';
+import { uniqueId } from '@/utils/common.ts'
+import type { UiTabsRadiosProps } from './UiTabs.types.ts'
+import UiTabsRadioItem from './UiTabsRadioItem.vue'
+import { computed, ref, type StyleValue } from 'vue'
 
-const props = withDefaults(defineProps<IUiTabsRadiosProps>(), {
+const props = withDefaults(defineProps<UiTabsRadiosProps>(), {
   id: () => uniqueId('ui-tabs-id'),
   name: () => uniqueId('ui-tabs-name'),
-});
+})
 
 const emit = defineEmits({
-  'update:model-value': (value: typeof props['modelValue']) => value === null || ['boolean', 'string', 'number'].includes(typeof value),
+  'update:model-value': (value: (typeof props)['modelValue']) =>
+    value === null || ['boolean', 'string', 'number'].includes(typeof value),
 })
 
 const tabsRefs = ref<(HTMLElement | undefined)[]>([])
@@ -18,7 +19,7 @@ const tabsRefs = ref<(HTMLElement | undefined)[]>([])
 const selectLineTransitionDuration = ref('0.1ms')
 
 const currentTabIndex = computed((): number =>
-  props.options.findIndex(option => option.value === props.modelValue),
+  props.options.findIndex((option) => option.value === props.modelValue),
 )
 
 const selectLineStyle = computed((): StyleValue => {
@@ -38,11 +39,7 @@ const selectLineStyle = computed((): StyleValue => {
 
 <template>
   <div class="ui-tabs-radios">
-    <div
-      v-for="option in props.options"
-      :key="String(option.value)"
-      ref="tabsRefs"
-    >
+    <div v-for="option in props.options" :key="String(option.value)" ref="tabsRefs">
       <UiTabsRadioItem
         :id="`${props.id}-${option.value}`"
         :name="`${props.name}`"
@@ -62,21 +59,21 @@ const selectLineStyle = computed((): StyleValue => {
 </template>
 
 <style lang="scss" scoped>
-  .ui-tabs-radios {
-    position: relative;
-    display: flex;
-    column-gap: 8px;
+.ui-tabs-radios {
+  position: relative;
+  display: flex;
+  column-gap: 8px;
 
-    &__select-line {
-      position: absolute;
-      bottom: -2px;
-      height: 2px;
-      background-color: var(--text-color);
-      left: 0;
-      width: 0;
-      transition:
-        left v-bind(selectLineTransitionDuration) ease,
-        width v-bind(selectLineTransitionDuration) ease;
-    }
+  &__select-line {
+    position: absolute;
+    bottom: -2px;
+    height: 2px;
+    background-color: var(--text-color);
+    left: 0;
+    width: 0;
+    transition:
+      left v-bind(selectLineTransitionDuration) ease,
+      width v-bind(selectLineTransitionDuration) ease;
   }
+}
 </style>

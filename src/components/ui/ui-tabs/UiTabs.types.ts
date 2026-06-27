@@ -1,23 +1,23 @@
-export interface IUiTabsLinkOption {
+export interface UiTabsLinkOption {
   href: string
   label: string
 }
 
-export interface IUiTabsLinksProps {
+export interface UiTabsLinksProps {
   modelValue: string
-  options: IUiTabsLinkOption[]
+  options: UiTabsLinkOption[]
 }
 
 export type UiTabsRadiosValue = string | number | boolean | null
 
-export interface IUiTabsRadioOption {
+export interface UiTabsRadioOption {
   value: UiTabsRadiosValue
   label: string
 }
 
-export interface IUiTabsRadiosProps {
-  id?: string;
-  name?: string;
+export interface UiTabsRadiosProps {
+  id?: string
+  name?: string
   modelValue: UiTabsRadiosValue
-  options: IUiTabsRadioOption[]
+  options: UiTabsRadioOption[]
 }

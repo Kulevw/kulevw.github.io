@@ -1,34 +1,14 @@
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router';
-import { RoutesNames } from '@/router';
-
-import ThemeSwitch from '@/components/ThemeSwitch.vue';
-import UiTabsLinks from '@/components/ui/ui-tabs/UiTabsLinks.vue';
-
-const router = useRouter();
-const route = useRoute();
-
-const links = [
-  {
-    name: RoutesNames.Home,
-    label: 'Главная',
-  },
-  {
-    name: RoutesNames.About,
-    label: 'Описание',
-  },
-  {
-    name: RoutesNames.MazeGeneration,
-    label: 'Генерация лабиринтов',
-  },
-].map(option => ({ href: router.resolve({ name: option.name }).fullPath, label: option.label }))
+import ThemeSwitch from '@/components/ThemeSwitch.vue'
+import PortfolioLogo from '@/components/PortfolioLogo.vue'
 </script>
 
 <template>
   <header class="base-header" data-theme="reverse">
     <div class="grid-container">
       <div class="base-header__inner">
-        <UiTabsLinks :model-value="route.fullPath" :options="links" />
+        <PortfolioLogo />
+        <h1 class="base-header__title">Портфолио</h1>
 
         <ThemeSwitch class="base-header__theme-switch" />
       </div>
@@ -42,8 +22,6 @@ const links = [
 .base-header {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-medium);
 
   &__inner {
     grid-area: content;
@@ -53,13 +31,14 @@ const links = [
     padding: 20px 16px;
   }
 
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+  }
+
   &__theme-switch {
     margin-left: auto;
-    display: flex;
-
-    @include mobile-bp {
-      display: none;
-    }
   }
 }
 </style>

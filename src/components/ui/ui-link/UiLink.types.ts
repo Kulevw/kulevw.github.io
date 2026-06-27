@@ -1,4 +1,4 @@
-export interface IUiLinkProps {
-  href?: string;
-  target?: string;
+export interface UiLinkProps {
+  href?: string
+  target?: string
 }

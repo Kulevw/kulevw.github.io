@@ -1,5 +1,5 @@
 export const uniqueId = (() => {
-  let counter = 0;
+  let counter = 0
 
-  return (prefix = '') => `${prefix}-${++counter}`;
+  return (prefix = '') => `${prefix}-${++counter}`
 })()

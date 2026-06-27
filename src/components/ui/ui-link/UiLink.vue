@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { IUiLinkProps } from './UiLink.types';
+import { computed } from 'vue'
+import type { UiLinkProps } from './UiLink.types'
 
-const props = defineProps<IUiLinkProps>();
+const props = defineProps<UiLinkProps>()
 
 const emit = defineEmits({
   click: (e: MouseEvent) => e instanceof MouseEvent,
 })
 
-const tag = computed(() => props.href ? 'a' : 'button');
+const tag = computed(() => (props.href ? 'a' : 'button'))
 </script>
 
 <template>
@@ -24,13 +24,13 @@ const tag = computed(() => props.href ? 'a' : 'button');
 </template>
 
 <style lang="scss" scoped>
-  .ui-link {
-    color: var(--text-color);
-    text-decoration: none;
+.ui-link {
+  color: var(--text-color);
+  text-decoration: none;
 
-    &:hover,
-    &:active {
-      color: var(--text-color);
-    }
+  &:hover,
+  &:active {
+    color: var(--text-color);
   }
+}
 </style>

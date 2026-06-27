@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseHeader from '@/layouts/base/BaseHeader.vue';
+import BaseHeader from '@/layouts/base/BaseHeader.vue'
 </script>
 
 <template>
@@ -12,9 +12,9 @@ import BaseHeader from '@/layouts/base/BaseHeader.vue';
 </template>
 
 <style lang="scss" scoped>
-  .base-layout {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
+.base-layout {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 </style>

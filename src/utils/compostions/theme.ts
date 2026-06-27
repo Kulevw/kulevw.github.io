@@ -1,9 +1,19 @@
-import { onBeforeMount, ref, customRef, computed, provide, inject, type ComputedRef, watch } from "vue"
+import {
+  onBeforeMount,
+  ref,
+  customRef,
+  computed,
+  provide,
+  inject,
+  watch,
+  type ComputedRef,
+  type Ref,
+} from 'vue'
 
 const STORAGE_THEME_KEY = 'theme'
 const PROVIDE_SAVED_THEME_KEY = 'SAVED_THEME'
 const PROVIDE_THEME_DARK_KEY = 'THEME_DARK'
-const DOCUMENT_THEME_ATTRIBUTE_KEY = 'data-theme';
+const DOCUMENT_THEME_ATTRIBUTE_KEY = 'data-theme'
 
 export enum SavedTheme {
   Light = 'light',
@@ -11,34 +21,34 @@ export enum SavedTheme {
 }
 
 export const useAppTheme = () => {
-  const isPrefersColorSchemeDark = ref<boolean>(false);
+  const isPrefersColorSchemeDark = ref<boolean>(false)
+
   const savedTheme = customRef((track, trigger) => {
-    let currentValue = getSavedTheme();
+    let currentValue = getSavedTheme()
 
     return {
       get(): SavedTheme | null {
-        track();
-        return currentValue;
+        track()
+        return currentValue
       },
       set(value: SavedTheme | null) {
         setSavedTheme(value)
         currentValue = value
-        trigger();
-      }
+        trigger()
+      },
     }
-  });
+  })
 
-  const isThemeDark = computed(
-    () => savedTheme.value
-      ? savedTheme.value === SavedTheme.Dark
-      : isPrefersColorSchemeDark.value
+  const isThemeDark = computed(() =>
+    savedTheme.value ? savedTheme.value === SavedTheme.Dark : isPrefersColorSchemeDark.value,
   )
 
   provide(PROVIDE_THEME_DARK_KEY, isThemeDark)
   provide(PROVIDE_SAVED_THEME_KEY, savedTheme)
 
   function watchPrefersColorScheme() {
-    const isSupportedPrefersColorScheme = window?.matchMedia(`(prefers-color-scheme)`)?.media === '(prefers-color-scheme)'
+    const isSupportedPrefersColorScheme =
+      window?.matchMedia(`(prefers-color-scheme)`)?.media === '(prefers-color-scheme)'
 
     if (!isSupportedPrefersColorScheme) {
       return
@@ -46,7 +56,7 @@ export const useAppTheme = () => {
 
     const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
 
-    isPrefersColorSchemeDark.value = mediaQueryList.matches;
+    isPrefersColorSchemeDark.value = mediaQueryList.matches
 
     mediaQueryList.addEventListener('change', onUpdatePrefersColorScheme)
 
@@ -56,7 +66,7 @@ export const useAppTheme = () => {
   }
 
   function getSavedTheme() {
-    const initialValue = localStorage.getItem(STORAGE_THEME_KEY) as SavedTheme;
+    const initialValue = localStorage.getItem(STORAGE_THEME_KEY) as SavedTheme
 
     if (!Object.values(SavedTheme).includes(initialValue as SavedTheme)) {
       localStorage.removeItem(STORAGE_THEME_KEY)
@@ -85,11 +95,11 @@ export const useAppTheme = () => {
   onBeforeMount(() => {
     const stopers = [
       watchPrefersColorScheme(),
-      watch(savedTheme, onUpdateDocumentAttributeTheme, { immediate: true })
+      watch(savedTheme, onUpdateDocumentAttributeTheme, { immediate: true }),
     ]
 
-    return () => stopers.forEach(stop => stop?.())
-  });
+    return () => stopers.forEach((stop) => stop?.())
+  })
 
   return {
     savedTheme,
@@ -97,5 +107,8 @@ export const useAppTheme = () => {
   }
 }
 
-export const useSavedTheme = (): ComputedRef<SavedTheme | null> => inject(PROVIDE_SAVED_THEME_KEY) ?? computed(() => null)
+export const useIsDarkTheme = (): ComputedRef<boolean> =>
+  inject(PROVIDE_THEME_DARK_KEY) ?? computed(() => false)
 
+export const useSavedTheme = (): Ref<SavedTheme | null> =>
+  inject(PROVIDE_SAVED_THEME_KEY) ?? computed(() => null)

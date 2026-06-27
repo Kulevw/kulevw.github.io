@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { computed, ref, type StyleValue } from 'vue';
-import type { IUiTabsLinksProps } from './UiTabs.types.ts';
+import { computed, ref, type StyleValue } from 'vue'
+import type { UiTabsLinksProps } from './UiTabs.types.ts'
 import UiTabsLinkItem from './UiTabsLinkItem.vue'
 
-const props = defineProps<IUiTabsLinksProps>();
+const props = defineProps<UiTabsLinksProps>()
 
 const emit = defineEmits({
-  'update:mode-value': (value: typeof props['modelValue']) => value === null || ['boolean', 'string', 'number'].includes(typeof value),
+  'update:mode-value': (value: (typeof props)['modelValue']) =>
+    value === null || ['boolean', 'string', 'number'].includes(typeof value),
 })
 
 const tabsRefs = ref<(HTMLElement | undefined)[]>([])
@@ -14,7 +15,7 @@ const tabsRefs = ref<(HTMLElement | undefined)[]>([])
 const selectLineTransitionDuration = ref('0.1ms')
 
 const currentTabIndex = computed((): number =>
-  props.options.findIndex(option => option.href === props.modelValue),
+  props.options.findIndex((option) => option.href === props.modelValue),
 )
 
 const selectLineStyle = computed((): StyleValue => {
@@ -34,15 +35,8 @@ const selectLineStyle = computed((): StyleValue => {
 
 <template>
   <div class="ui-tabs-links">
-    <div
-      v-for="option in props.options"
-      :key="String(option.href)"
-      ref="tabsRefs"
-    >
-      <UiTabsLinkItem
-        :href="option.href"
-        @navigate="emit('update:mode-value', $event)"
-      >
+    <div v-for="option in props.options" :key="String(option.href)" ref="tabsRefs">
+      <UiTabsLinkItem :href="option.href" @navigate="emit('update:mode-value', $event)">
         {{ option.label }}
       </UiTabsLinkItem>
     </div>
@@ -56,21 +50,21 @@ const selectLineStyle = computed((): StyleValue => {
 </template>
 
 <style lang="scss" scoped>
-  .ui-tabs-links {
-    position: relative;
-    display: flex;
-    column-gap: 8px;
+.ui-tabs-links {
+  position: relative;
+  display: flex;
+  column-gap: 8px;
 
-    &__select-line {
-      position: absolute;
-      bottom: -2px;
-      height: 2px;
-      background-color: var(--text-color);
-      left: 0;
-      width: 0;
-      transition:
-        left v-bind(selectLineTransitionDuration) ease,
-        width v-bind(selectLineTransitionDuration) ease;
-    }
+  &__select-line {
+    position: absolute;
+    bottom: -2px;
+    height: 2px;
+    background-color: var(--text-color);
+    left: 0;
+    width: 0;
+    transition:
+      left v-bind(selectLineTransitionDuration) ease,
+      width v-bind(selectLineTransitionDuration) ease;
   }
+}
 </style>

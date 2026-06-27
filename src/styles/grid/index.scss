@@ -15,7 +15,10 @@
 
 .grid-container {
   display: grid;
-  grid-template-areas: "left-side content right-side";
-  grid-template-columns: minmax(max-content, 1fr) min(var(--container-max-width, 100%), 100%) minmax(max-content, 1fr);
+  grid-template-areas: 'left-side content right-side';
+  grid-template-columns: minmax(max-content, 1fr) min(
+      var(--container-max-width, 100%),
+      100%
+    ) minmax(max-content, 1fr);
   flex-grow: 1;
 }

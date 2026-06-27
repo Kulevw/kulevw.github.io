@@ -1,0 +1,123 @@
+import type { Graph, GraphNode, GraphNodeRealation } from './base'
+import { makeGraph, makeGraphNode } from './base'
+import { pairPoint } from '../math'
+
+export type RectGraphRelationPosition = 'top' | 'right' | 'bottom' | 'left'
+
+export type RectGraphNodeRelation = GraphNodeRealation<RectGraphRelationPosition>
+
+export interface RectGraphNode extends GraphNode<
+  RectGraph,
+  RectGraphRelationPosition,
+  RectGraphNodeRelation,
+  RectGraphNode
+> {
+  x: number
+  y: number
+}
+
+export const RECT_GRAPH_TYPE = 'rect' as const
+
+export interface RectGraph extends Graph<RectGraphNode, typeof RECT_GRAPH_TYPE> {
+  rows: number
+  cols: number
+}
+
+const makeRectGraphNodeRelations = (
+  x: number,
+  y: number,
+): [RectGraphNodeRelation[], Map<number, RectGraphNodeRelation>] => {
+  const offsets: [number, number, RectGraphRelationPosition][] = [
+    [0, -1, 'top'],
+    [+1, 0, 'right'],
+    [0, +1, 'bottom'],
+    [-1, 0, 'left'],
+  ]
+
+  const keyToRelationPairs = offsets.map(([offsetX, offsetY, position]) => {
+    const relationX = x + offsetX
+    const relationY = y + offsetY
+
+    const key = pairPoint(relationX, relationY)
+
+    const setWeight = (value: number) => (relation.weight = value)
+
+    const relation = {
+      key,
+      position,
+      x: relationX,
+      y: relationY,
+      weight: 0,
+      setWeight,
+    }
+
+    return [key, relation] as [number, RectGraphNodeRelation]
+  })
+
+  const relationsMap = new Map(keyToRelationPairs)
+
+  return [[...relationsMap.values()], relationsMap]
+}
+
+const makeRectGraphNodeEdges = (): [
+  RectGraphNode[],
+  Map<RectGraphRelationPosition, RectGraphNode>,
+] => {
+  return [[], new Map()]
+}
+
+const makeRectGraphNode = (graph: RectGraph, x: number, y: number) => {
+  const [relations, relationsMap] = makeRectGraphNodeRelations(x, y)
+  const [edges, edgesMap] = makeRectGraphNodeEdges()
+
+  const initEdges = () => {
+    const positionToNodePairs = relations
+      .map((r) => [r.position, graph.getNodeByKey(r.key)])
+      .filter(([, node]) => !!node) as [RectGraphRelationPosition, RectGraphNode][]
+
+    positionToNodePairs.forEach(([position, node]) => edgesMap.set(position, node))
+    edges.push(...edgesMap.values())
+  }
+
+  const node: RectGraphNode = {
+    ...makeGraphNode<RectGraphNode, RectGraph, RectGraphRelationPosition>(
+      graph,
+      pairPoint(x, y),
+      edges,
+      edgesMap,
+      relations,
+      relationsMap,
+    ),
+    x,
+    y,
+  }
+
+  return [node, initEdges] as [RectGraphNode, () => void]
+}
+
+export const makeRectGraph = (rows: number, cols: number): RectGraph => {
+  const nodes: RectGraph['nodes'] = []
+  const nodesMap: RectGraph['nodesMap'] = new Map()
+
+  const graph: RectGraph = {
+    ...makeGraph('rect', nodes, nodesMap),
+    rows,
+    cols,
+  }
+
+  const initNodesEdges: (() => void)[] = []
+
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      const [node, initEdges] = makeRectGraphNode(graph, x, y)
+
+      initNodesEdges.push(initEdges)
+      nodes.push(node)
+      nodesMap.set(node.key, node)
+    }
+  }
+
+  initNodesEdges.forEach((initEdges) => initEdges())
+
+  return graph
+}

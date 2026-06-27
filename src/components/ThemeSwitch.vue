@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { SavedTheme, useSavedTheme } from '@/utils/compostions/theme';
+import { SavedTheme, useSavedTheme } from '@/utils/compostions/theme'
 
-import UiRadioSwitch from '@/components/ui/ui-radio-switch/UiRadioSwitch.vue';
-import type { IUiRadioSwitchOption } from '@/components/ui/ui-radio-switch/UiRadioSwitch.types';
+import UiRadioSwitch from '@/components/ui/ui-radio-switch/UiRadioSwitch.vue'
+import type { UiRadioSwitchOption } from '@/components/ui/ui-radio-switch/UiRadioSwitch.types'
 
-interface IThemeSwitchProps {
-  vertical?: boolean;
+interface ThemeSwitchProps {
+  vertical?: boolean
 }
 
-const props = defineProps<IThemeSwitchProps>();
+const props = defineProps<ThemeSwitchProps>()
 
-const savedTheme = useSavedTheme();
+const savedTheme = useSavedTheme()
 
-const themeOptions: IUiRadioSwitchOption[] = [
+const themeOptions: UiRadioSwitchOption[] = [
   {
     value: SavedTheme.Light,
     label: 'L',
@@ -25,13 +25,9 @@ const themeOptions: IUiRadioSwitchOption[] = [
     value: SavedTheme.Dark,
     label: 'D',
   },
-];
+]
 </script>
 
 <template>
-  <UiRadioSwitch
-    v-model="savedTheme"
-    :options="themeOptions"
-    :vertical="props.vertical"
-  />
+  <UiRadioSwitch v-model="savedTheme" :options="themeOptions" :vertical="props.vertical" />
 </template>
