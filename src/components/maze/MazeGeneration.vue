@@ -2,24 +2,20 @@
 import { makeRectGraph } from '@/utils/graph/rect-graph.ts'
 
 import MazeField from '@/components/maze/MazeField.vue'
-import { DPR } from '@/constants/index.ts'
 import type { MazeFieldParams } from '@/components/maze/MazeField.types'
 
 function initMazeFieldParams(width: number, height: number): MazeFieldParams {
-  const lineWeight = 1 * DPR
+  const lineWeight = 1
 
-  const cellSize = 10
+  const cellSize = 60
 
-  const cols = Math.floor((width * DPR) / cellSize)
+  const cols = Math.floor(width / cellSize)
 
   // const cols = 100
 
-  // const cellSize = (width * DPR) / cols
+  // const cellSize = width / cols
 
-  const rows = Math.floor((height * DPR) / cellSize)
-
-  // console.log('cols', cols)
-  // console.log('rows', rows)
+  const rows = Math.floor(height / cellSize)
 
   const graph = makeRectGraph(rows, cols)
 

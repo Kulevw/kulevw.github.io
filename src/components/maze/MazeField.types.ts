@@ -1,8 +1,8 @@
-import type { BaseGraph } from '@/utils/graph/base'
-import type { MazeField } from '@/utils/maze/field'
+import type { Graph, GraphNodeState } from '@/utils/graph/base'
+import type { MazeField } from '@/utils/maze/base'
 
 export interface MazeFieldParams {
-  graph: BaseGraph
+  graph: Graph
   cellSize: number
   lineWeight: number
 }
@@ -17,4 +17,9 @@ export interface MazeFieldContext {
   sidesCtx: CanvasRenderingContext2D
   rootElement: HTMLElement
   field: MazeField
+}
+
+export interface MazeFieldPalitra {
+  Sides: { Default: string }
+  Cells: Record<GraphNodeState, string>
 }

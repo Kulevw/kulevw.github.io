@@ -2,25 +2,21 @@ import type { Point } from '@/utils/math'
 import { toIntPoint, toPoint } from '@/utils/math/geometry/helpers'
 import { Clipper, PolyType, ClipType, PolyFillType, JS, type Paths } from 'clipper-lib'
 
-const SCALE = 100
+const SCALE = 1000
 
 export const unionPolygones = (polygones: Point[][]): Point[][] => {
-  const paths = polygones.map((path) => path.map(toIntPoint))
-
-  if (!paths.length) {
+  if (!polygones.length) {
     return []
   }
 
-  JS.ScaleUpPaths(paths, SCALE)
+  const paths = polygones.map((path) => path.map(toIntPoint))
 
-  // console.log('paths', paths)
+  JS.ScaleUpPaths(paths, SCALE)
 
   const clipper = new Clipper()
   const solutionPaths: Paths = []
 
   const simplyPaths = Clipper.SimplifyPolygons(paths, PolyFillType.pftNonZero)
-
-  // console.log('simplyPaths', simplyPaths)
 
   clipper.AddPaths(simplyPaths, PolyType.ptSubject, true)
 

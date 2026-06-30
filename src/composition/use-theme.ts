@@ -111,4 +111,4 @@ export const useIsDarkTheme = (): ComputedRef<boolean> =>
   inject(PROVIDE_THEME_DARK_KEY) ?? computed(() => false)
 
 export const useSavedTheme = (): Ref<SavedTheme | null> =>
-  inject(PROVIDE_SAVED_THEME_KEY) ?? computed(() => null)
+  inject(PROVIDE_SAVED_THEME_KEY) ?? ref(null)

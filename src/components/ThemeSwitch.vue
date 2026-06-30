@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SavedTheme, useSavedTheme } from '@/utils/compostions/theme'
+import { SavedTheme, useSavedTheme } from '@/composition/use-theme'
 
 import UiRadioSwitch from '@/components/ui/ui-radio-switch/UiRadioSwitch.vue'
 import type { UiRadioSwitchOption } from '@/components/ui/ui-radio-switch/UiRadioSwitch.types'

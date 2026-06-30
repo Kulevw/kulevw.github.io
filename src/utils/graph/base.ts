@@ -1,64 +1,75 @@
+import { uniqueId } from '@/utils/common'
 import { makeEventEmitter, type EventEmitter } from '@/utils/event-emitter'
 
-export interface BaseGraphNode {
-  key: number
-  graph: BaseGraph
-  edges: BaseGraphNode[]
-  isAvailableEdge(edge: BaseGraphNode): boolean
-  setWeightToEdge(edge: BaseGraphNode, weight: number): void
-  getRelation(key: number): GraphNodeRealation | null
+export enum GraphNodeState {
+  Default = 'Default',
+  Visited = 'Visited',
+  Selected = 'Selected',
 }
 
-export interface BaseGraph {
-  type: string
-  nodes: BaseGraphNode[]
+export interface GraphNode {
+  key: string
+  graph: Graph
+  edges: GraphNode[]
+  state: GraphNodeState
+  setState(state: GraphNodeState): void
+  isAvailableEdge(edge: GraphNode): boolean
+  setWeightToEdge(edge: GraphNode, weight: number): void
+  getRelation(key: string): GraphNodeRealation | null
 }
 
 type GraphEvents = {
-  'relation-updated'(from: BaseGraphNode, to: BaseGraphNode): void
-  'node-isolated'(node: BaseGraphNode): void
+  'relation-updated'(from: GraphNode, to: GraphNode): void
+  'node-state-updated'(node: GraphNode): void
+  'node-isolated'(node: GraphNode): void
   isolated(): void
+}
+
+export interface Graph extends EventEmitter<GraphEvents> {
+  id: string
+  type: string
+  nodes: GraphNode[]
 }
 
 export interface GraphNodeRealation<P extends string = string> {
   position: P
-  key: number
+  key: string
   weight: number
   setWeight(value: number): void
 }
 
-export interface GraphNode<
-  G extends BaseGraph = BaseGraph,
+export interface GraphNodeExtended<
+  G extends Graph = Graph,
   P extends string = string,
   R extends GraphNodeRealation<P> = GraphNodeRealation<P>,
-  N extends BaseGraphNode = BaseGraphNode,
-> extends BaseGraphNode {
+  N extends GraphNode = GraphNode,
+> extends GraphNode {
   graph: G
-  key: number
   edges: N[]
   relations: R[]
-  getRelation(key: number): R | null
+  getRelation(key: string): R | null
   getEdgeByPosition(position: P): N | null
   isAvailableEdge(edge: N): boolean
   setWeightToEdge(edge: N, weight: number): void
   isolate(): void
 }
 
-export interface Graph<N extends BaseGraphNode = BaseGraphNode, T extends string = string>
-  extends BaseGraph, EventEmitter<GraphEvents> {
+export interface GraphExtended<
+  N extends GraphNode = GraphNode,
+  T extends string = string,
+> extends Graph {
   type: T
   nodes: N[]
-  nodesMap: Map<number, N>
-  getNodeByKey(key: number): N | null
+  getNodeByKey(key: string): N | null
   isolate(): void
 }
 
-export const makeGraph = <N extends GraphNode, T extends string>(
+export const makeGraph = <N extends GraphNodeExtended, T extends string>(
   type: T,
   nodes: N[],
-  nodesMap: Map<number, N>,
-): Graph<N, T> => {
-  const getNodeByKey = (key: number) => nodesMap.get(key) ?? null
+  nodesMap: Map<string, N>,
+): GraphExtended<N, T> => {
+  const getNodeByKey = (key: string) => nodesMap.get(key) ?? null
 
   const isolate = () => {
     nodes.forEach((node) => node.isolate())
@@ -67,9 +78,9 @@ export const makeGraph = <N extends GraphNode, T extends string>(
 
   const graph = {
     ...makeEventEmitter<GraphEvents>(),
+    id: uniqueId('GRAPH'),
     type,
     nodes,
-    nodesMap,
     getNodeByKey,
     isolate,
   }
@@ -78,23 +89,29 @@ export const makeGraph = <N extends GraphNode, T extends string>(
 }
 
 export const makeGraphNode = <
-  N extends BaseGraphNode,
-  G extends Graph<N>,
+  N extends GraphNode,
+  G extends GraphExtended<N>,
   P extends string = string,
   R extends GraphNodeRealation<P> = GraphNodeRealation<P>,
 >(
   graph: G,
-  key: number,
+  key: string,
   edges: N[],
   edgesMap: Map<P, N>,
   relations: R[],
-  relationsMap: Map<number, R>,
-): GraphNode<G, P, R, N> => {
+  relationsMap: Map<string, R>,
+): GraphNodeExtended<G, P, R, N> => {
   const getEdgeByPosition = (position: P) => edgesMap.get(position) ?? null
 
   const isAvailableEdge = (edge: N) => (relationsMap.get(edge.key)?.weight ?? 0) > 0
 
-  const getRelation = (key: number) => relationsMap.get(key) ?? null
+  const getRelation = (key: string) => relationsMap.get(key) ?? null
+
+  const setState = (state: GraphNodeState) => {
+    node.state = state
+
+    graph.emit('node-state-updated', node)
+  }
 
   const setWeightToEdge = (edge: N, weight: number) => {
     getRelation(edge.key)?.setWeight(weight)
@@ -114,11 +131,13 @@ export const makeGraphNode = <
     key,
     edges,
     relations,
+    setState,
     getEdgeByPosition,
     isAvailableEdge,
     getRelation,
     setWeightToEdge,
     isolate,
+    state: GraphNodeState.Default,
   }
 
   return node

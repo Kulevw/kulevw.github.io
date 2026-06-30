@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 
 import { env } from '@/env'
-import { useAppTheme } from '@/utils/compostions/theme'
+import { useAppTheme } from '@/composition/use-theme'
 
 if (env.IS_CLIENT) {
   useAppTheme()
@@ -14,5 +14,5 @@ if (env.IS_CLIENT) {
 </template>
 
 <style lang="scss">
-@use './styles/index.scss';
+@use '@/styles/index.scss';
 </style>

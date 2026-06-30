@@ -66,6 +66,7 @@ const classList = computed(
   }
 
   &__value {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -83,6 +84,7 @@ const classList = computed(
 
     input:focus-visible + & {
       @include focus-outline;
+      z-index: 1;
     }
   }
 }

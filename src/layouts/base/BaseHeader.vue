@@ -7,8 +7,8 @@ import PortfolioLogo from '@/components/PortfolioLogo.vue'
   <header class="base-header" data-theme="reverse">
     <div class="grid-container">
       <div class="base-header__inner">
-        <PortfolioLogo />
         <h1 class="base-header__title">Портфолио</h1>
+        <PortfolioLogo />
 
         <ThemeSwitch class="base-header__theme-switch" />
       </div>

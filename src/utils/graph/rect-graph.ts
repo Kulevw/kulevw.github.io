@@ -1,12 +1,12 @@
-import type { Graph, GraphNode, GraphNodeRealation } from './base'
+import type { GraphExtended, GraphNodeExtended, GraphNodeRealation } from './base'
 import { makeGraph, makeGraphNode } from './base'
-import { pairPoint } from '../math'
+import { keyOfPoint } from '../math'
 
 export type RectGraphRelationPosition = 'top' | 'right' | 'bottom' | 'left'
 
 export type RectGraphNodeRelation = GraphNodeRealation<RectGraphRelationPosition>
 
-export interface RectGraphNode extends GraphNode<
+export interface RectGraphNode extends GraphNodeExtended<
   RectGraph,
   RectGraphRelationPosition,
   RectGraphNodeRelation,
@@ -18,7 +18,7 @@ export interface RectGraphNode extends GraphNode<
 
 export const RECT_GRAPH_TYPE = 'rect' as const
 
-export interface RectGraph extends Graph<RectGraphNode, typeof RECT_GRAPH_TYPE> {
+export interface RectGraph extends GraphExtended<RectGraphNode, typeof RECT_GRAPH_TYPE> {
   rows: number
   cols: number
 }
@@ -26,7 +26,7 @@ export interface RectGraph extends Graph<RectGraphNode, typeof RECT_GRAPH_TYPE> 
 const makeRectGraphNodeRelations = (
   x: number,
   y: number,
-): [RectGraphNodeRelation[], Map<number, RectGraphNodeRelation>] => {
+): [RectGraphNodeRelation[], Map<string, RectGraphNodeRelation>] => {
   const offsets: [number, number, RectGraphRelationPosition][] = [
     [0, -1, 'top'],
     [+1, 0, 'right'],
@@ -38,7 +38,7 @@ const makeRectGraphNodeRelations = (
     const relationX = x + offsetX
     const relationY = y + offsetY
 
-    const key = pairPoint(relationX, relationY)
+    const key = keyOfPoint(relationX, relationY)
 
     const setWeight = (value: number) => (relation.weight = value)
 
@@ -51,7 +51,7 @@ const makeRectGraphNodeRelations = (
       setWeight,
     }
 
-    return [key, relation] as [number, RectGraphNodeRelation]
+    return [key, relation] as [string, RectGraphNodeRelation]
   })
 
   const relationsMap = new Map(keyToRelationPairs)
@@ -82,7 +82,7 @@ const makeRectGraphNode = (graph: RectGraph, x: number, y: number) => {
   const node: RectGraphNode = {
     ...makeGraphNode<RectGraphNode, RectGraph, RectGraphRelationPosition>(
       graph,
-      pairPoint(x, y),
+      keyOfPoint(x, y),
       edges,
       edgesMap,
       relations,
@@ -96,8 +96,8 @@ const makeRectGraphNode = (graph: RectGraph, x: number, y: number) => {
 }
 
 export const makeRectGraph = (rows: number, cols: number): RectGraph => {
-  const nodes: RectGraph['nodes'] = []
-  const nodesMap: RectGraph['nodesMap'] = new Map()
+  const nodes: RectGraphNode[] = []
+  const nodesMap: Map<string, RectGraphNode> = new Map()
 
   const graph: RectGraph = {
     ...makeGraph('rect', nodes, nodesMap),

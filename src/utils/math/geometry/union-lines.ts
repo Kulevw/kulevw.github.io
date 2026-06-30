@@ -4,9 +4,9 @@ import { unionPolygones } from '@/utils/math/geometry/union-polygones'
 import { type Paths, ClipperOffset, JoinType, EndType } from 'clipper-lib'
 
 export const unionLines = (lines: Line[], weight: number): Point[][] => {
-  if (lines.length === 0) return []
-
-  // console.log('initial lines', lines)
+  if (!lines.length) {
+    return []
+  }
 
   const scaledLines = lines.map((line) => line.map(toIntPoint))
 

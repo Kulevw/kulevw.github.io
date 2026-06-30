@@ -1,5 +1,5 @@
 import type { Drawable } from '@/utils/graphics/base'
-import { type Line, type Point } from '@/utils/math'
+import { angleOfLine, cos, sin, type Line, type Point } from '@/utils/math'
 
 export interface LineGraphics extends Drawable<Line> {
   draw(ctx: CanvasRenderingContext2D, color: string): void
@@ -10,9 +10,8 @@ export const makeLineGraphics = (p1: Point, p2: Point, weight: number): LineGrap
 
   const draw = (ctx: CanvasRenderingContext2D, color: string) => {
     ctx.strokeStyle = color
-    ctx.lineWidth = weight * 2
-    ctx.lineJoin = 'miter'
-    ctx.lineCap = 'square'
+    ctx.lineWidth = weight
+    ctx.lineCap = 'round'
 
     ctx.beginPath()
     ctx.moveTo(...p1)
@@ -21,9 +20,12 @@ export const makeLineGraphics = (p1: Point, p2: Point, weight: number): LineGrap
   }
 
   const clear = (ctx: CanvasRenderingContext2D) => {
+    ctx.save()
+
     ctx.globalCompositeOperation = 'destination-out'
     draw(ctx, 'black')
     ctx.globalCompositeOperation = 'source-over'
+    ctx.restore()
   }
 
   return {
